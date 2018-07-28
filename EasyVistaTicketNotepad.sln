@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyVistaTicketNotepad", "EasyVistaTicketNotepad\EasyVistaTicketNotepad.csproj", "{D235BB6F-A497-4AF3-82D5-5E1DB94D3EAE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D235BB6F-A497-4AF3-82D5-5E1DB94D3EAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D235BB6F-A497-4AF3-82D5-5E1DB94D3EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D235BB6F-A497-4AF3-82D5-5E1DB94D3EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D235BB6F-A497-4AF3-82D5-5E1DB94D3EAE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8B32A5B2-BCC5-4787-AABD-BC1B5A2F0DC3}
+	EndGlobalSection
+EndGlobal
