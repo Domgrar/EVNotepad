@@ -1,0 +1,9 @@
+﻿Things to do in the app -----------------------------------
+1. Finish up the rest of the different queues
+2. Add sorting based on clicking the top of the listviews
+3. Update description/comments option
+4. Sending emails to work order people through a right click function
+
+
+
+Bugs ---------------------------------------------------------

@@ -10,15 +10,20 @@ using System.Windows.Forms;
 
 namespace EasyVistaTicketNotepad
 {
+
+
     public partial class Form1 : Form
     {
         const string WORK_ORDER_TEXT = "Work Order";
         const string MOVE_TO_QUEUE = "Move to a new queue";
         List<Ticket> jeremyPersonalQueue = new List<Ticket>();
+        
 
         public Form1()
         {
             InitializeComponent();
+
+            jeremyPersonalQueue = PersonalQueueGenerator.getJeremyPersonalQueue();
 
             const int ROW_HEIGHT = 75;
             const int VIEW_WIDTH = 750;
@@ -41,7 +46,7 @@ namespace EasyVistaTicketNotepad
             listView1.ContextMenuStrip = contextMenuStrip1;
 
 
-            jeremyPersonalQueue = PersonalQueueGenerator.getJeremyPersonalQueue();
+            
             //this.listView1.Columns
 
             
@@ -196,11 +201,14 @@ namespace EasyVistaTicketNotepad
         #region listView2Events
         private void listView2_DragDrop(object sender, DragEventArgs e)
         {
+
+            
             if (e.Data.GetDataPresent(typeof(List<ListViewItem>)))
             {
                 var items = (List<ListViewItem>)e.Data.GetData(typeof(List<ListViewItem>));
                 string ticketNumber =  items[0].Text;
                 string groupName = getGroupName((ListView)sender);
+                string isWorkOrder = getWorkOrderStatus((ListView)sender);
                 
                 
                 // move to dest LV
@@ -217,6 +225,8 @@ namespace EasyVistaTicketNotepad
                 }
             }
         }
+
+       
 
         private void listView2_DragOver(object sender, DragEventArgs e)
         {
@@ -259,7 +269,17 @@ namespace EasyVistaTicketNotepad
         #endregion
 
 
+        private string getWorkOrderStatus(ListView sender)
+        {
+            //Get work order
+            string isWorkOrder = string.Empty;
 
+            string selectedItem = sender.SelectedItems.ToString();
+
+            return isWorkOrder;
+
+            
+        }
 
         public string getGroupName(ListView obj)
         {

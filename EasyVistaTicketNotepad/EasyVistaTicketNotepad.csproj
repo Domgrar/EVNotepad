@@ -103,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="TicketInformation.txt" />
+    <Content Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

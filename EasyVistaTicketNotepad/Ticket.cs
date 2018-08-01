@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace EasyVistaTicketNotepad
 {
@@ -23,8 +24,13 @@ namespace EasyVistaTicketNotepad
         public string DaysLeftForSLA { get; set; }
         public string ActionType { get; set; }
 
+        
+        string textFilePath = System.IO.Directory.GetCurrentDirectory() + "\\TicketQueueInfo.txt";
+        
+
         public Ticket(Record rec)
         {
+            
             recipient = rec.Recipient;
             requestor = rec.RequestingPerson;
             Comment = rec.Comments;
@@ -43,7 +49,7 @@ namespace EasyVistaTicketNotepad
         {
             string innerHTML = string.Empty;
 
-            HtmlDocument doc = new HtmlDocument();
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
             
             doc.LoadHtml(recDescription);
             
@@ -182,6 +188,29 @@ namespace EasyVistaTicketNotepad
             return daysLeft;
         }
 
+
+
+
+
+
+        #region ticketFieldUpdates
+
+        public static void updateListViewAssignment(ListView currentListView, Ticket ticketToUpdate)
+        {
+            // #1 need to update the group in the listView
+
+
+            // #2 need to update the text file to reflect the new listView group
+        }
+
+        public static void UpdateWorkOrderStatus(Ticket ticketToUpdate)
+        {
+
+        }
+
+
+
+        #endregion
 
 
 
