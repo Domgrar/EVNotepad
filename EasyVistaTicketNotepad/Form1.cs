@@ -26,7 +26,7 @@ namespace EasyVistaTicketNotepad
         {
             InitializeComponent();
 
-            jeremyPersonalQueue = PersonalQueueGenerator.getJeremyPersonalQueue();
+            jeremyPersonalQueue = SQLiteOperationFactory.GetAllQueueTickets();
 
             const int ROW_HEIGHT = 75;
             const int VIEW_WIDTH = 750;
@@ -46,6 +46,12 @@ namespace EasyVistaTicketNotepad
             contextMenuStrip1.Items.Add(WORK_ORDER_TEXT);
             contextMenuStrip1.Items.Add("Update Description");
             contextMenuStrip1.Items.Add(MOVE_TO_QUEUE);
+
+
+
+            (contextMenuStrip1.Items[0] as ToolStripMenuItem).DropDownItems.Add("Uncategorized");
+            (contextMenuStrip1.Items[0] as ToolStripMenuItem).DropDownItems.Add("Group");
+            (contextMenuStrip1.Items[0] as ToolStripMenuItem).DropDownItems.Add("Procurment");
             listView1.ContextMenuStrip = contextMenuStrip1;
 
             
@@ -62,12 +68,12 @@ namespace EasyVistaTicketNotepad
 
                 if (currentTicket.Designated_Queue.Contains( "Uncategorized"))
                 {
-                    var item1 = new ListViewItem(new[] { currentTicket.Number, currentTicket.recipient, currentTicket.DaysLeftForSLA + " Days left", currentTicket.Short_Description, currentTicket.Comment, currentTicket.Designated_Queue, currentTicket.ActionType });
+                    var item1 = new ListViewItem(new[] { currentTicket.Number, currentTicket.recipient, currentTicket.DaysLeftForSLA + " Days left", currentTicket.Short_Description, currentTicket.Comment, currentTicket.Designated_Queue, currentTicket.IsWorkOrder });
                     listView1.Items.Add(item1);
                 }
                 else if(currentTicket.Designated_Queue.Contains("Group"))
                 {
-                    var item1 = new ListViewItem(new[] { currentTicket.Number, currentTicket.recipient, currentTicket.DaysLeftForSLA + " Days left", currentTicket.Short_Description, currentTicket.Comment, currentTicket.Designated_Queue, currentTicket.ActionType });
+                    var item1 = new ListViewItem(new[] { currentTicket.Number, currentTicket.recipient, currentTicket.DaysLeftForSLA + " Days left", currentTicket.Short_Description, currentTicket.Comment, currentTicket.Designated_Queue, currentTicket.IsWorkOrder });
                     listView2.Items.Add(item1);
                 }
                
@@ -358,6 +364,49 @@ namespace EasyVistaTicketNotepad
             var clickedItem = e.ClickedItem;
             Form UpdateForm = new UpdateGroupAssignmentForm();
 
+            
+            switch (clickedItem.Text)
+            {
+                case MOVE_TO_QUEUE:
+                    UpdateForm.Show();
+                    break;
+                case WORK_ORDER_TEXT:
+                    var rightClickedItem = listView1.SelectedItems;
+                    foreach (ListViewItem item in rightClickedItem)
+                    {
+                        //Set the work order element to yes and then update the text file 
+                        Ticket currentTicket = new Ticket();
+                        currentTicket.Number = item.SubItems[0].Text;
+                        if (item.SubItems[6].Text.Contains("No"))
+                        {
+                            currentTicket.IsWorkOrder = "Yes";
+                            item.SubItems[6].Text = "Yes";
+                        }
+                        else
+                        {
+                            currentTicket.IsWorkOrder = "No";
+                            item.SubItems[6].Text = "No";
+                        }
+                        currentTicket.Designated_Queue = item.SubItems[5].Text;
+
+                        SQLiteOperationFactory.UpdateWorkOrderStatusInDB(currentTicket);
+
+                    }
+                    break;
+                case "Group":
+                    MessageBox.Show("Group clicked");
+                    break;
+                case "Uncategorized":
+                    MessageBox.Show("Uncategorized clicked");
+                    break;
+                case "Procurment":
+                    MessageBox.Show("Procurment Clicked");
+                    break;
+
+
+            }
+            
+            /*
             if(clickedItem.Text == MOVE_TO_QUEUE)
             {
                 UpdateForm.Show();
@@ -372,17 +421,20 @@ namespace EasyVistaTicketNotepad
                     if(item.SubItems[6].Text.Contains("No"))
                     {
                         currentTicket.IsWorkOrder = "Yes";
+                        item.SubItems[6].Text = "Yes";
                     }
                     else
                     {
                         currentTicket.IsWorkOrder = "No";
+                        item.SubItems[6].Text = "No";
                     }
                     currentTicket.Designated_Queue = item.SubItems[5].Text;
 
-                    Ticket.ChangeWorkOrderStatus(currentTicket);
-                   item.SubItems[6].Text = "Yes";
+                    SQLiteOperationFactory.UpdateWorkOrderStatusInDB(currentTicket);
+                   
                 }
             }
+            */
         }
 
         

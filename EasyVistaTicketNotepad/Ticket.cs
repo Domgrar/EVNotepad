@@ -44,11 +44,25 @@ namespace EasyVistaTicketNotepad
             SLA_Target = rec.SLATarget;
             Number = rec.Number;
             Current_Status = rec.CurrentStatus;
-            Short_Description = getShortString(this.Description);
+            //Short_Description = getShortString(this.Description);
             Designated_Queue = CheckIfTicketExistsTextFile(Number, "Assignment");
-            DaysLeftForSLA = getDaysLeftForSLATarget(SLA_Target);
+            //DaysLeftForSLA = getDaysLeftForSLATarget(SLA_Target);
             ActionType = CheckIfTicketExistsTextFile(Number, "WorkOrder");
             textFilePath = System.IO.Directory.GetCurrentDirectory() + "\\TicketQueueInfo.txt";
+            this.SetShortDescription();
+            this.SetDaysLeftForSLATarget();
+        }
+
+        public void SetShortDescription()
+        {
+            if (this.Description.Length < 60)
+            {
+                this.Short_Description = this.Description.Substring(0, this.Description.Length / 2);
+            }
+            else
+            {
+                this.Short_Description = this.Description.Substring(0, 60);
+            }
         }
 
         public static string getInnerHTMLOfDescription(string recDescription)
@@ -70,6 +84,8 @@ namespace EasyVistaTicketNotepad
             return innerHTML;
         }
 
+
+        /*
         public static string getShortString(string description)
         {
             string shortDescription = string.Empty;
@@ -85,6 +101,7 @@ namespace EasyVistaTicketNotepad
 
             return shortDescription;
         }
+        */
 
         public static string CheckIfTicketExistsTextFile(string ticketNumber, string attributeSearch)
         {
@@ -181,6 +198,21 @@ namespace EasyVistaTicketNotepad
             }
         }
 
+        public void SetDaysLeftForSLATarget()
+        {
+            string daysLeft = string.Empty;
+
+            DateTime SLADate = DateTime.Parse(this.SLA_Target);
+            DateTime todayDate = DateTime.Now;
+
+            daysLeft = (((todayDate - SLADate).Days) * -1).ToString();
+
+            Console.WriteLine(daysLeft);
+
+            this.DaysLeftForSLA = daysLeft;
+        }
+
+        /*
         public string getDaysLeftForSLATarget(string SLATarget)
         {
             string daysLeft = string.Empty;
@@ -194,7 +226,7 @@ namespace EasyVistaTicketNotepad
 
             return daysLeft;
         }
-
+        */
 
 
 
