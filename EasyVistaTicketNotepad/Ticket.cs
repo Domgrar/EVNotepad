@@ -9,7 +9,8 @@ using System.Windows.Forms;
 
 namespace EasyVistaTicketNotepad
 {
-    class Ticket
+
+    public class Ticket
     {
         public string recipient { get; set; }
         public string requestor { get; set; }
@@ -23,10 +24,14 @@ namespace EasyVistaTicketNotepad
         public string Designated_Queue { get; set; }
         public string DaysLeftForSLA { get; set; }
         public string ActionType { get; set; }
+        public string IsWorkOrder { get; set; }
+        public ListView currentListView { get; set; }
+        public string textFilePath { get; set; }
 
         
-        string textFilePath = System.IO.Directory.GetCurrentDirectory() + "\\TicketQueueInfo.txt";
         
+        
+        public Ticket() { }
 
         public Ticket(Record rec)
         {
@@ -43,6 +48,7 @@ namespace EasyVistaTicketNotepad
             Designated_Queue = CheckIfTicketExistsTextFile(Number, "Assignment");
             DaysLeftForSLA = getDaysLeftForSLATarget(SLA_Target);
             ActionType = CheckIfTicketExistsTextFile(Number, "WorkOrder");
+            textFilePath = System.IO.Directory.GetCurrentDirectory() + "\\TicketQueueInfo.txt";
         }
 
         public static string getInnerHTMLOfDescription(string recDescription)
@@ -104,6 +110,7 @@ namespace EasyVistaTicketNotepad
                 else
                 {
                     writeTicketToTextFile(ticketNumber, textFilePath);
+                    return "Uncategorized";
                 }
 
 
@@ -195,24 +202,85 @@ namespace EasyVistaTicketNotepad
 
         #region ticketFieldUpdates
 
-        public static void updateListViewAssignment(ListView currentListView, Ticket ticketToUpdate)
+        public static void updateListViewAssignment(List<ListViewItem> currentListViewItems, Ticket ticketToUpdate, ListView currentListView)
         {
             // #1 need to update the group in the listView
-
+            Ticket currentTicket = new Ticket();
+            currentTicket.Number = currentListViewItems[0].Text;
+           // currentTicket.Designated_Queue = 
 
             // #2 need to update the text file to reflect the new listView group
         }
 
-        public static void UpdateWorkOrderStatus(Ticket ticketToUpdate)
-        {
 
-        }
 
 
 
         #endregion
 
+        //Work order status will come out of the listview item
+        public string GetWorkOrderStatus()
+        {
+            if (this.Number == "")
+            {
+                return "No";
+            }
+            else
+            {
+                return this.IsWorkOrder;
+            }
+        }
 
+        public void GetGroupName()
+        {
+            string groupName = string.Empty;
+
+            if(this.Number == "")
+            {
+                this.Designated_Queue = "Uncategorized";
+            }
+            else
+            {
+                if(this.currentListView.Name == "listView1")
+                {
+                    this.Designated_Queue = "Uncategorized";
+                }
+            else if (this.currentListView.Name == "listView2")
+            {
+                    this.Designated_Queue = "Group";
+            }
+            else if (this.currentListView.Name == "listView3")
+            {
+                    this.Designated_Queue = "Procurment";
+            }
+            
+        }
+        }
+
+
+        public static void ChangeWorkOrderStatus(Ticket ticketToChange)
+        {
+            string textFilePath = System.IO.Directory.GetCurrentDirectory() + "\\TicketQueueInfo.txt";
+
+            string textFromFile = File.ReadAllText(textFilePath);
+            string newTextForFile = string.Empty;
+
+            List<string> allLines = textFromFile.Split('\n').ToList<string>();
+
+            foreach(string line in allLines)
+            {
+                if(line.Split(' ').Contains(ticketToChange.Number))
+                {
+                    newTextForFile += ticketToChange.Number + " " + ticketToChange.Designated_Queue + " " + ticketToChange.IsWorkOrder + '\r' + '\n';
+                }
+                else
+                {
+                    newTextForFile += line + '\r' + '\n';
+                }
+            }
+
+            File.WriteAllText(textFilePath, newTextForFile);
+        }
 
 
 

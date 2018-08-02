@@ -11,6 +11,9 @@ namespace EasyVistaTicketNotepad
 {
     class PersonalQueueGenerator
     {
+
+       // List<Ticket> PersonalQueue;
+
         public static List<Ticket> getJeremyPersonalQueue()
         {
             //List<string> jeremyPersonalTicketsList = new List<string>();
@@ -44,12 +47,25 @@ namespace EasyVistaTicketNotepad
                 jeremyPersonalTicketsList.Add(new Ticket(rec));
             }
 
+            
             return jeremyPersonalTicketsList;
         }
 
         public void ChangeQueueDesignation(string ticketNumber, List<Ticket> personalQueue)
         {
 
+        }
+
+        public Ticket getTicketFromQueue(string ticketNumber, List<Ticket> Queue)
+        {
+            foreach(Ticket tic in Queue)
+            {
+                if(tic.Number == ticketNumber)
+                {
+                    return tic;
+                }
+            }
+            return null;
         }
     }
 }

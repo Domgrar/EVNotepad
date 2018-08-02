@@ -14,10 +14,13 @@ namespace EasyVistaTicketNotepad
 
     public partial class Form1 : Form
     {
-        const string WORK_ORDER_TEXT = "Work Order";
+        const string WORK_ORDER_TEXT = "Flip Work Order";
         const string MOVE_TO_QUEUE = "Move to a new queue";
         List<Ticket> jeremyPersonalQueue = new List<Ticket>();
+
+       //Dictionary<int, string> listViewFieldDictionary = new Dictionary<int, string>();
         
+
 
         public Form1()
         {
@@ -45,7 +48,7 @@ namespace EasyVistaTicketNotepad
             contextMenuStrip1.Items.Add(MOVE_TO_QUEUE);
             listView1.ContextMenuStrip = contextMenuStrip1;
 
-
+            
             
             //this.listView1.Columns
 
@@ -165,23 +168,24 @@ namespace EasyVistaTicketNotepad
         {
             if (e.Data.GetDataPresent(typeof(List<ListViewItem>)))
             {
-                var items = (List<ListViewItem>)e.Data.GetData(typeof(List<ListViewItem>));
-                string ticketNumber = items[0].Text;
-                string groupName = getGroupName((ListView)sender);
+                var listViewItem = (List<ListViewItem>)e.Data.GetData(typeof(List<ListViewItem>));
 
-
-                // move to dest LV
-                foreach (ListViewItem lvi in items)
+                foreach(var item in listViewItem)
                 {
+                    Ticket currentTicket = new Ticket();
+                    currentTicket.Number = item.SubItems[0].Text;
+                    currentTicket.currentListView = (ListView)sender;
+                    currentTicket.Designated_Queue = getGroupName((ListView)sender);
+                    currentTicket.IsWorkOrder = item.SubItems[6].Text;
 
-                    lvi.SubItems[5].Text = groupName;
+                    item.SubItems[5].Text = currentTicket.Designated_Queue;
 
-                    lvi.ListView.Items.Remove(lvi);
-                    listView1.Items.Add(lvi);
+                    item.ListView.Items.Remove(item);
+                    listView1.Items.Add(item);
 
-                    updateTextFile(ticketNumber, groupName, "No");
-
+                    UpdateTextFile(currentTicket);
                 }
+
             }
         }
 
@@ -201,28 +205,36 @@ namespace EasyVistaTicketNotepad
         #region listView2Events
         private void listView2_DragDrop(object sender, DragEventArgs e)
         {
-
+            
             
             if (e.Data.GetDataPresent(typeof(List<ListViewItem>)))
             {
-                var items = (List<ListViewItem>)e.Data.GetData(typeof(List<ListViewItem>));
-                string ticketNumber =  items[0].Text;
-                string groupName = getGroupName((ListView)sender);
-                string isWorkOrder = getWorkOrderStatus((ListView)sender);
                 
-                
-                // move to dest LV
-                foreach (ListViewItem lvi in items)
+                var listViewItem = (List<ListViewItem>)e.Data.GetData(typeof (List<ListViewItem>));
+
+                foreach (var item in listViewItem)
                 {
+                    Ticket currentTicket = new Ticket();
+                    currentTicket.Number = item.SubItems[0].Text;
+                    currentTicket.currentListView = (ListView)sender;
+                    currentTicket.Designated_Queue = getGroupName((ListView)sender);
+                    currentTicket.IsWorkOrder = item.SubItems[6].Text;
+
+
+                    item.SubItems[5].Text = currentTicket.Designated_Queue;
+
+                    item.ListView.Items.Remove(item);
+                    listView2.Items.Add(item);
+
+                    UpdateTextFile(currentTicket);
                     
-                    lvi.SubItems[5].Text = groupName;
-
-                    lvi.ListView.Items.Remove(lvi);
-                    listView2.Items.Add(lvi);
-
-                    updateTextFile(ticketNumber, groupName, "No");
-                 
                 }
+
+
+                // move to dest LV
+
+                
+                
             }
         }
 
@@ -297,8 +309,9 @@ namespace EasyVistaTicketNotepad
             return groupName;
         }
 
-        public void updateTextFile(string ticketNumber, string groupName, string isWorkOrder)
+        public void UpdateTextFile(Ticket currentTicket)
         {
+            
             string currentDirectory = System.IO.Directory.GetCurrentDirectory();
             string textFilePath = currentDirectory + "\\TicketQueueInfo.txt";
             string textFromFile = System.IO.File.ReadAllText(textFilePath);
@@ -308,9 +321,9 @@ namespace EasyVistaTicketNotepad
             //ONLY UPDATES THE GROUPNAME IN THE LINE RIGHT NOW
             foreach(string line in textLines)
             {
-                if (line.Contains(ticketNumber))
+                if (line.Contains(currentTicket.Number))
                 {
-                    newText += ticketNumber + " " + groupName + " " +  + '\r' + '\n';           // NEED  the work order status out of this
+                    newText += currentTicket.Number + " " + currentTicket.Designated_Queue + " " + (string)currentTicket.IsWorkOrder + '\r' + '\n';           // NEED  the work order status out of this
                 }
                 else
                 {
@@ -348,6 +361,27 @@ namespace EasyVistaTicketNotepad
             if(clickedItem.Text == MOVE_TO_QUEUE)
             {
                 UpdateForm.Show();
+            }else if(clickedItem.Text == WORK_ORDER_TEXT)
+            {
+                var rightClickedItem = listView1.SelectedItems;
+                foreach(ListViewItem item in rightClickedItem)
+                {
+                    //Set the work order element to yes and then update the text file 
+                    Ticket currentTicket = new Ticket();
+                    currentTicket.Number = item.SubItems[0].Text;
+                    if(item.SubItems[6].Text.Contains("No"))
+                    {
+                        currentTicket.IsWorkOrder = "Yes";
+                    }
+                    else
+                    {
+                        currentTicket.IsWorkOrder = "No";
+                    }
+                    currentTicket.Designated_Queue = item.SubItems[5].Text;
+
+                    Ticket.ChangeWorkOrderStatus(currentTicket);
+                   item.SubItems[6].Text = "Yes";
+                }
             }
         }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EasyVistaTicketNotepad
 {
-    class Record
+    public class Record
     {
         public string ActionType { get; set; }
     public string Comments { get; set; }
