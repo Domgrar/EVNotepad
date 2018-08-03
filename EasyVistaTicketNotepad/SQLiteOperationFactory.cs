@@ -107,11 +107,7 @@ namespace EasyVistaTicketNotepad
                        // jeremyPersonalTicketsList.Add(newDBTicket);
                         // Build a new ticket from the db and add it into out jeremyPersonalTickets
                     }
-                    else
-                    {
-                        //jeremyPersonalTicketsList.Add(new Ticket(rec));
-                        //Add a new ticket like below from the api call with default parameters for designated queue and isworkorder(.Add(new Ticket(rec))
-                    }
+                    
                 }
                 dataReader.Close();
                 if (isInDBFlag)
@@ -203,6 +199,13 @@ namespace EasyVistaTicketNotepad
             {
                 sqlite.Close();
             }
+        }
+
+
+        //Delete tickets that are no longer in the personal queue from the db
+        public static void DeleteNonExistantTickets(List<Ticket> apiTicketList)
+        {
+
         }
 
 

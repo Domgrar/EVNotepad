@@ -16,6 +16,8 @@ namespace EasyVistaTicketNotepad
     {
         const string WORK_ORDER_TEXT = "Flip Work Order";
         const string MOVE_TO_QUEUE = "Move to a new queue";
+        const string MOVE_TO_RESPONDED = "Move to responded";
+        const string UPDATE_DESCRIPTION = "Update Description";
         List<Ticket> jeremyPersonalQueue = new List<Ticket>();
 
        //Dictionary<int, string> listViewFieldDictionary = new Dictionary<int, string>();
@@ -33,18 +35,18 @@ namespace EasyVistaTicketNotepad
 
             addColumnHeaders(listView1);
             addColumnHeaders(listView2);
-            addColumnHeaders(listView3);
+            //addColumnHeaders(listView3);
 
             setRowHeight(listView1, ROW_HEIGHT);
             setRowHeight(listView2, ROW_HEIGHT);
-            setRowHeight(listView3, ROW_HEIGHT);
+           // setRowHeight(listView3, ROW_HEIGHT);
 
-            listView1.Width = VIEW_WIDTH;
-            listView2.Width = VIEW_WIDTH;
+           // listView1.Width = VIEW_WIDTH;
+          //  listView2.Width = VIEW_WIDTH;
 
             //DisplayListViewRightClickMenu(listView1);
             contextMenuStrip1.Items.Add(WORK_ORDER_TEXT);
-            contextMenuStrip1.Items.Add("Update Description");
+            contextMenuStrip1.Items.Add(UPDATE_DESCRIPTION);
             contextMenuStrip1.Items.Add(MOVE_TO_QUEUE);
 
 
@@ -54,7 +56,7 @@ namespace EasyVistaTicketNotepad
             (contextMenuStrip1.Items[0] as ToolStripMenuItem).DropDownItems.Add("Procurment");
             listView1.ContextMenuStrip = contextMenuStrip1;
 
-            
+            listView1.ShowItemToolTips = true;
             
             //this.listView1.Columns
 
@@ -69,9 +71,11 @@ namespace EasyVistaTicketNotepad
                 if (currentTicket.Designated_Queue.Contains( "Uncategorized"))
                 {
                     var item1 = new ListViewItem(new[] { currentTicket.Number, currentTicket.recipient, currentTicket.DaysLeftForSLA + " Days left", currentTicket.Short_Description, currentTicket.Comment, currentTicket.Designated_Queue, currentTicket.IsWorkOrder });
+                    item1.ToolTipText = currentTicket.Description;
+                    
                     listView1.Items.Add(item1);
                 }
-                else if(currentTicket.Designated_Queue.Contains("Group"))
+                else if(currentTicket.Designated_Queue.Contains("Response"))
                 {
                     var item1 = new ListViewItem(new[] { currentTicket.Number, currentTicket.recipient, currentTicket.DaysLeftForSLA + " Days left", currentTicket.Short_Description, currentTicket.Comment, currentTicket.Designated_Queue, currentTicket.IsWorkOrder });
                     listView2.Items.Add(item1);
@@ -189,7 +193,8 @@ namespace EasyVistaTicketNotepad
                     item.ListView.Items.Remove(item);
                     listView1.Items.Add(item);
 
-                    UpdateTextFile(currentTicket);
+                    SQLiteOperationFactory.UpdateDesignatedQueueInDB(currentTicket);
+                   // UpdateTextFile(currentTicket);
                 }
 
             }
@@ -232,7 +237,8 @@ namespace EasyVistaTicketNotepad
                     item.ListView.Items.Remove(item);
                     listView2.Items.Add(item);
 
-                    UpdateTextFile(currentTicket);
+                    SQLiteOperationFactory.UpdateDesignatedQueueInDB(currentTicket);
+                   // UpdateTextFile(currentTicket);
                     
                 }
 
@@ -277,14 +283,7 @@ namespace EasyVistaTicketNotepad
         #endregion
 
 
-        #region listView3Region
-        private void listView3_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-
-        }
-
-
-        #endregion
+       
 
 
         private string getWorkOrderStatus(ListView sender)
@@ -307,13 +306,14 @@ namespace EasyVistaTicketNotepad
                 groupName = "Uncategorized";
             }else if(obj.Name == "listView2")
             {
-                groupName = "Group";
+                groupName = "Response";
             }else if(obj.Name == "listView3")
             {
                 groupName = "Procurment";
             }
             return groupName;
         }
+
 
         public void UpdateTextFile(Ticket currentTicket)
         {
@@ -393,6 +393,10 @@ namespace EasyVistaTicketNotepad
 
                     }
                     break;
+                case UPDATE_DESCRIPTION:
+                    MessageBox.Show("Update Description clicked");
+                    break;
+
                 case "Group":
                     MessageBox.Show("Group clicked");
                     break;
@@ -406,35 +410,7 @@ namespace EasyVistaTicketNotepad
 
             }
             
-            /*
-            if(clickedItem.Text == MOVE_TO_QUEUE)
-            {
-                UpdateForm.Show();
-            }else if(clickedItem.Text == WORK_ORDER_TEXT)
-            {
-                var rightClickedItem = listView1.SelectedItems;
-                foreach(ListViewItem item in rightClickedItem)
-                {
-                    //Set the work order element to yes and then update the text file 
-                    Ticket currentTicket = new Ticket();
-                    currentTicket.Number = item.SubItems[0].Text;
-                    if(item.SubItems[6].Text.Contains("No"))
-                    {
-                        currentTicket.IsWorkOrder = "Yes";
-                        item.SubItems[6].Text = "Yes";
-                    }
-                    else
-                    {
-                        currentTicket.IsWorkOrder = "No";
-                        item.SubItems[6].Text = "No";
-                    }
-                    currentTicket.Designated_Queue = item.SubItems[5].Text;
-
-                    SQLiteOperationFactory.UpdateWorkOrderStatusInDB(currentTicket);
-                   
-                }
-            }
-            */
+           
         }
 
         

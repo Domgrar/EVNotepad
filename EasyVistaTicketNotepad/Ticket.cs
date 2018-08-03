@@ -55,13 +55,13 @@ namespace EasyVistaTicketNotepad
 
         public void SetShortDescription()
         {
-            if (this.Description.Length < 60)
+            if (this.Description.Length > 60)
             {
-                this.Short_Description = this.Description.Substring(0, this.Description.Length / 2);
+                this.Short_Description = this.Description.Substring(0, 60);
             }
             else
             {
-                this.Short_Description = this.Description.Substring(0, 60);
+                this.Short_Description = this.Description;
             }
         }
 
@@ -85,23 +85,7 @@ namespace EasyVistaTicketNotepad
         }
 
 
-        /*
-        public static string getShortString(string description)
-        {
-            string shortDescription = string.Empty;
-
-            if (description.Length < 60)
-            {
-                shortDescription = description.Substring(0, description.Length / 2);
-            }
-            else
-            {
-                shortDescription = description.Substring(0, 60);
-            }
-
-            return shortDescription;
-        }
-        */
+       
 
         public static string CheckIfTicketExistsTextFile(string ticketNumber, string attributeSearch)
         {
