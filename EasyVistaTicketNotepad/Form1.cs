@@ -363,15 +363,16 @@ namespace EasyVistaTicketNotepad
         {
             var clickedItem = e.ClickedItem;
             Form UpdateForm = new UpdateGroupAssignmentForm();
+             
+            ListView.SelectedListViewItemCollection rightClickedItem = listView1.SelectedItems;
 
-            
             switch (clickedItem.Text)
             {
                 case MOVE_TO_QUEUE:
                     UpdateForm.Show();
                     break;
                 case WORK_ORDER_TEXT:
-                    var rightClickedItem = listView1.SelectedItems;
+                    
                     foreach (ListViewItem item in rightClickedItem)
                     {
                         //Set the work order element to yes and then update the text file 
@@ -394,7 +395,8 @@ namespace EasyVistaTicketNotepad
                     }
                     break;
                 case UPDATE_DESCRIPTION:
-                    MessageBox.Show("Update Description clicked");
+                    UpdateDescriptionOnForm(rightClickedItem);
+                   // MessageBox.Show("Update Description clicked");
                     break;
 
                 case "Group":
@@ -413,6 +415,30 @@ namespace EasyVistaTicketNotepad
            
         }
 
-        
+       
+
+        public static void UpdateDescriptionOnForm(ListView.SelectedListViewItemCollection itemToUpdateCollection)
+        {
+            Ticket ticketToUpdate = null;
+            UpdateDescriptionForm updateForm;
+            if(itemToUpdateCollection.Count > 1)
+            {
+                throw new Exception("Too many items to update");
+            }
+            foreach(ListViewItem item in  itemToUpdateCollection)
+            {
+                ticketToUpdate = new Ticket((ListViewItem)item);
+               // UpdateDescriptionForm.updateTicket = ticketToUpdate;
+            }
+            
+            updateForm = new UpdateDescriptionForm(ticketToUpdate);
+            updateForm.Show();
+           // MessageBox.Show(ticketToUpdate.Number);
+            //Launch form to get new description
+        }
+
     }
+
+    
+
 }

@@ -39,7 +39,7 @@ namespace EasyVistaTicketNotepad
             recipient = rec.Recipient;
             requestor = rec.RequestingPerson;
             Comment = rec.Comments;
-            Description = getInnerHTMLOfDescription( rec.TicketDescription);
+            Description = rec.TicketDescription;
             Support_Person = rec.SupportPerson;
             SLA_Target = rec.SLATarget;
             Number = rec.Number;
@@ -49,8 +49,22 @@ namespace EasyVistaTicketNotepad
             //DaysLeftForSLA = getDaysLeftForSLATarget(SLA_Target);
             ActionType = CheckIfTicketExistsTextFile(Number, "WorkOrder");
             textFilePath = System.IO.Directory.GetCurrentDirectory() + "\\TicketQueueInfo.txt";
+            this.FixDescription();
             this.SetShortDescription();
             this.SetDaysLeftForSLATarget();
+            
+        }
+
+        public Ticket(ListViewItem ticketItem)
+        {
+            this.Number = ticketItem.SubItems[0].Text;
+            this.recipient = ticketItem.SubItems[1].Text;
+            this.SLA_Target = ticketItem.SubItems[2].Text;
+            this.Description = ticketItem.SubItems[3].Text;
+            this.Comment = ticketItem.SubItems[4].Text;
+            this.Designated_Queue = ticketItem.SubItems[5].Text;
+            this.IsWorkOrder = ticketItem.SubItems[6].Text;
+
         }
 
         public void SetShortDescription()
@@ -65,13 +79,13 @@ namespace EasyVistaTicketNotepad
             }
         }
 
-        public static string getInnerHTMLOfDescription(string recDescription)
+        public  void FixDescription()
         {
             string innerHTML = string.Empty;
 
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
             
-            doc.LoadHtml(recDescription);
+            doc.LoadHtml(this.Description);
             
             foreach (HtmlNode pTag in doc.DocumentNode.SelectNodes("//p"))
             {
@@ -81,7 +95,7 @@ namespace EasyVistaTicketNotepad
             innerHTML = innerHTML.Replace("&nbsp;", "");
             
             Console.WriteLine(innerHTML);
-            return innerHTML;
+            this.Description = innerHTML;
         }
 
 

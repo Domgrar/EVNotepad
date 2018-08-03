@@ -85,6 +85,12 @@
     <Compile Include="RootObject.cs" />
     <Compile Include="SQLiteOperationFactory.cs" />
     <Compile Include="Ticket.cs" />
+    <Compile Include="UpdateDescriptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpdateDescriptionForm.Designer.cs">
+      <DependentUpon>UpdateDescriptionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UpdateGroupAssignmentForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,6 +109,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UpdateDescriptionForm.resx">
+      <DependentUpon>UpdateDescriptionForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UpdateGroupAssignmentForm.resx">
       <DependentUpon>UpdateGroupAssignmentForm.cs</DependentUpon>
     </EmbeddedResource>

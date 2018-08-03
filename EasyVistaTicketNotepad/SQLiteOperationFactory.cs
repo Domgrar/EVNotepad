@@ -93,13 +93,14 @@ namespace EasyVistaTicketNotepad
                     if(dataReader.GetString(0) == rec.Number)
                     {
 
-                        newTicket.Number = dataReader["TicketNumber"].ToString();
-                        newTicket.recipient = dataReader["Recipient"].ToString();
-                        newTicket.SLA_Target = dataReader["SLA"].ToString();
-                        newTicket.Description = dataReader["Description"].ToString();
-                        newTicket.Comment = dataReader["Comment"].ToString();
+                        newTicket.Number = rec.Number;
+                        newTicket.recipient = rec.Recipient;
+                        newTicket.SLA_Target = rec.SLATarget;
+                        newTicket.Description = rec.TicketDescription;
+                        newTicket.Comment = rec.Comments;
                         newTicket.Designated_Queue = dataReader["DesignatedQueue"].ToString();
                         newTicket.IsWorkOrder = dataReader["IsWorkOrder"].ToString();
+                        newTicket.FixDescription();
                         newTicket.SetShortDescription();
                         newTicket.SetDaysLeftForSLATarget();
 
@@ -130,6 +131,10 @@ namespace EasyVistaTicketNotepad
             }
 
             sqlite.Close();
+
+            DeleteNonExistantTickets(jeremyPersonalTicketsList);
+
+            
             return jeremyPersonalTicketsList;
             
         }
@@ -205,7 +210,64 @@ namespace EasyVistaTicketNotepad
         //Delete tickets that are no longer in the personal queue from the db
         public static void DeleteNonExistantTickets(List<Ticket> apiTicketList)
         {
+            SQLiteConnection sqlite = SQLiteOperationFactory.jeremyConnection;
+            string textReader = string.Empty;
+            SQLiteCommand sqliteCMD = new SQLiteCommand("SELECT * FROM JeremyQueue;", sqlite);
+            sqlite.Open();
 
+            List<string> dbTicketNumberList = new List<string>();
+            List<string> apiTicketNumberList = new List<string>();
+            SQLiteDataReader dataReader = sqliteCMD.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                dbTicketNumberList.Add(dataReader["TicketNumber"].ToString());
+
+            }
+            dataReader.Close();
+          
+
+            foreach(Ticket tic in apiTicketList)
+            {
+                apiTicketNumberList.Add(tic.Number);
+            }
+
+            var staleTickets = dbTicketNumberList.Except(apiTicketNumberList);
+
+            foreach(var item in staleTickets)
+            {
+               
+                Console.WriteLine(item);
+                sqliteCMD.CommandText = "DELETE from JeremyQueue WHERE TicketNumber = '" + item + "';";
+
+                try
+                {
+                    sqliteCMD.ExecuteNonQuery();
+                }catch(Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+               
+            }
+            sqlite.Close();
+        }
+
+
+        public static void UpdateDescriptionInDB(Ticket updateTicket)
+        {
+
+            SQLiteConnection sqlite = SQLiteOperationFactory.jeremyConnection;
+            string textReader = string.Empty;
+            SQLiteCommand sqliteCMD = new SQLiteCommand("UPDATE JeremyQueue SET Description = '" + updateTicket.Description + "' WHERE TicketNumber = '" + updateTicket.Number + "';", sqlite);
+            sqlite.Open();
+
+            try
+            {
+                sqliteCMD.ExecuteNonQuery();
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
 
