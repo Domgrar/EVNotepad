@@ -14,11 +14,13 @@ namespace EasyVistaTicketNotepad
     {
 
         public  Ticket mToUpdate;
+        public ListViewItem mSelectedItem;
 
-        public UpdateDescriptionForm(Ticket toUpdate)
+        public UpdateDescriptionForm(Ticket toUpdate, ListViewItem selectedItem)
         {
             InitializeComponent();
             mToUpdate = toUpdate;
+            mSelectedItem = selectedItem;
             richTextBox1.Text = mToUpdate.Description;
            // richTextBox1.Text = updateTicket.Description;
         }
@@ -44,11 +46,16 @@ namespace EasyVistaTicketNotepad
             
         }
 
-        public Ticket HideAndReturnTicket(Ticket returnTicket)
+        public void HideAndReturnTicket(Ticket returnTicket)
         {
+            returnTicket = mToUpdate;
+            this.Close();
+             
+        }
 
-            this.Hide();
-            return returnTicket;
+        private void UpdateDescriptionForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Form1.GetNewTicket(mToUpdate, mSelectedItem);
         }
     }
 }

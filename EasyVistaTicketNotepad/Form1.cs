@@ -56,7 +56,8 @@ namespace EasyVistaTicketNotepad
             (contextMenuStrip1.Items[0] as ToolStripMenuItem).DropDownItems.Add("Procurment");
             listView1.ContextMenuStrip = contextMenuStrip1;
 
-            listView1.ShowItemToolTips = true;
+           // listView1.ShowItemToolTips = true;
+          //  listView1.
             
             //this.listView1.Columns
 
@@ -71,9 +72,15 @@ namespace EasyVistaTicketNotepad
                 if (currentTicket.Designated_Queue.Contains( "Uncategorized"))
                 {
                     var item1 = new ListViewItem(new[] { currentTicket.Number, currentTicket.recipient, currentTicket.DaysLeftForSLA + " Days left", currentTicket.Short_Description, currentTicket.Comment, currentTicket.Designated_Queue, currentTicket.IsWorkOrder });
-                    item1.ToolTipText = currentTicket.Description;
+
+                    item1.ToolTipText = "Test tooltip text";
+                    Console.WriteLine(item1);
                     
                     listView1.Items.Add(item1);
+                    
+
+                    // item1.ToolTipText = currentTicket.Description;
+                    //item1.ToolTipText = "Test tooltip text";
                 }
                 else if(currentTicket.Designated_Queue.Contains("Response"))
                 {
@@ -82,6 +89,7 @@ namespace EasyVistaTicketNotepad
                 }
                
             }
+            listView1.ShowItemToolTips = true;
 
           
 
@@ -314,7 +322,7 @@ namespace EasyVistaTicketNotepad
             return groupName;
         }
 
-
+        /*
         public void UpdateTextFile(Ticket currentTicket)
         {
             
@@ -341,6 +349,7 @@ namespace EasyVistaTicketNotepad
             System.IO.File.WriteAllText(textFilePath, newText);
 
         }
+        */
 
         private void label1_Click(object sender, EventArgs e)
         {
@@ -415,12 +424,13 @@ namespace EasyVistaTicketNotepad
            
         }
 
-       
 
+#region FunctionsToUpdateDescriptionOnTicket
         public static void UpdateDescriptionOnForm(ListView.SelectedListViewItemCollection itemToUpdateCollection)
         {
             Ticket ticketToUpdate = null;
             UpdateDescriptionForm updateForm;
+            ListViewItem selectedItem = null;
             if(itemToUpdateCollection.Count > 1)
             {
                 throw new Exception("Too many items to update");
@@ -428,17 +438,54 @@ namespace EasyVistaTicketNotepad
             foreach(ListViewItem item in  itemToUpdateCollection)
             {
                 ticketToUpdate = new Ticket((ListViewItem)item);
+                selectedItem = item;
                // UpdateDescriptionForm.updateTicket = ticketToUpdate;
             }
             
-            updateForm = new UpdateDescriptionForm(ticketToUpdate);
+            updateForm = new UpdateDescriptionForm(ticketToUpdate, selectedItem);
             updateForm.Show();
+
+           // updateForm.HideAndReturnTicket(ticketToUpdate);
+            Console.WriteLine(ticketToUpdate.Number);
            // MessageBox.Show(ticketToUpdate.Number);
             //Launch form to get new description
         }
 
-    }
+        public static void GetNewTicket(Ticket NewTicket, ListViewItem selectedItem)
+        {
+            selectedItem.SubItems[3].Text = NewTicket.Description;
+            SQLiteOperationFactory.UpdateDescriptionInDB(NewTicket);
+            EVAPIUpdater.UpdateTicketDescription(NewTicket);
+        }
 
-    
+
+
+        #region QueueViewClickEvents
+        private void tier3QueueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void procurmentQueueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void projectQueueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void uncategorizedQueueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+        #endregion
+
+
+    }
+#endregion
+
+
 
 }

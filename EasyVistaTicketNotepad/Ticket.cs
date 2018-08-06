@@ -83,19 +83,27 @@ namespace EasyVistaTicketNotepad
         {
             string innerHTML = string.Empty;
 
+            
+
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-            
-            doc.LoadHtml(this.Description);
-            
-            foreach (HtmlNode pTag in doc.DocumentNode.SelectNodes("//p"))
+
+            try
             {
-                 innerHTML += pTag.InnerText;
-                // do whatever with text
+                doc.LoadHtml(this.Description);
+
+                foreach (HtmlNode pTag in doc.DocumentNode.SelectNodes("//p"))
+                {
+                    innerHTML += pTag.InnerText;
+                    // do whatever with text
+                }
+                innerHTML = innerHTML.Replace("&nbsp;", "");
+
+                Console.WriteLine(innerHTML);
+                this.Description = innerHTML;
+            }catch(Exception ex)
+            {
+                this.Description = this.Description;
             }
-            innerHTML = innerHTML.Replace("&nbsp;", "");
-            
-            Console.WriteLine(innerHTML);
-            this.Description = innerHTML;
         }
 
 

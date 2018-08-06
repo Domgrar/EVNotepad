@@ -70,6 +70,7 @@
             this.Controls.Add(this.buttonSubmit);
             this.Name = "UpdateGroupAssignmentForm";
             this.Text = "UpdateWorkOrderForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UpdateGroupAssignmentForm_FormClosing);
             this.Load += new System.EventHandler(this.UpdateWorkOrderForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -34,5 +34,10 @@ namespace EasyVistaTicketNotepad
         {
 
         }
+
+        private void UpdateGroupAssignmentForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
     }
 }

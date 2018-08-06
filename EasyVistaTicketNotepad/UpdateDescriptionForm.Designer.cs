@@ -60,6 +60,7 @@
             this.Controls.Add(this.richTextBox1);
             this.Name = "UpdateDescriptionForm";
             this.Text = "UpdateDescriptionForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UpdateDescriptionForm_FormClosing);
             this.ResumeLayout(false);
 
         }

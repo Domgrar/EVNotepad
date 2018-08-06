@@ -268,6 +268,10 @@ namespace EasyVistaTicketNotepad
             {
                 throw new Exception(ex.Message);
             }
+            finally
+            {
+                sqlite.Close();
+            }
         }
 
 
